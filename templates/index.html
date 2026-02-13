@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sana Bir Sürprizim Var! ❤️</title>
+    <style>
+        body {
+            background-color: #fce4ec;
+            background-image: repeating-linear-gradient(45deg, #ffcdd2 25%, transparent 25%, transparent 75%, #ffcdd2 75%, #ffcdd2), 
+                              repeating-linear-gradient(45deg, #ffcdd2 25%, #fce4ec 25%, #fce4ec 75%, #ffcdd2 75%, #ffcdd2);
+            background-position: 0 0, 40px 40px;
+            background-size: 80px 80px;
+            font-family: 'Comic Sans MS', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            /* MAVİLİĞİ ÖNLEYEN ANA KOD: */
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE/Edge */
+            user-select: none; /* Standart */
+        }
+
+        .main-card {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+            text-align: center;
+            width: 90%;
+            max-width: 480px;
+            border: 8px solid #ff4d6d;
+            position: relative;
+            z-index: 10;
+        }
+
+        .step { display: none; }
+        .step.active { display: block; animation: popIn 0.5s ease; }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        h1 { color: #ff4d6d; font-size: 24px; margin-bottom: 20px; }
+        p { color: #555; font-size: 18px; margin-bottom: 25px; }
+
+        .cat-img { width: 220px; height: auto; margin-bottom: 20px; border-radius: 20px; }
+
+        input {
+            padding: 15px; width: 85%; border: 3px solid #ffcdd2;
+            border-radius: 25px; font-size: 18px; text-align: center;
+            outline: none; margin-bottom: 15px;
+            -webkit-user-select: text; /* Şifre yazabilmek için buna izin veriyoruz */
+            user-select: text;
+        }
+
+        .btn-next {
+            background-color: #ff4d6d; color: white; border: none;
+            padding: 15px 45px; border-radius: 50px; font-size: 20px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        /* Kalp Oyun Alanı */
+        #heartContainer { 
+            height: 200px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer;
+            outline: none;
+            -webkit-tap-highlight-color: transparent; /* Mobildeki mavi tıklama gölgesini de siler */
+        }
+        
+        #explodingHeart { 
+            font-size: 70px; 
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+
+        /* Mektup Tasarımı */
+        .letter-box {
+            background: #fffafa;
+            border: 2px dashed #ff4d6d;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: left;
+            line-height: 1.8;
+            font-size: 16px;
+            color: #444;
+        }
+
+        /* Kalp Yağmuru */
+        .falling-heart {
+            position: fixed; top: -10%; color: #ff4d6d;
+            font-size: 22px; user-select: none; z-index: 1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<audio id="bgMusic" loop>
+    <source src="{{ url_for('static', filename='sarkimiz.mp3') }}" type="audio/mpeg">
+</audio>
+
+<div class="main-card">
+    <div class="step active" id="step1">
+        <img src="{{ url_for('static', filename='gri_kedi.png') }}" class="cat-img">
+        <h1>Sevgililer Günü kutlu olsun! ❤️</h1>
+        <p>(っ◕‿◕)っ</p>
+        <button class="btn-next" onclick="nextPage(2)">Sıradaki! ✨</button>
+    </div>
+
+    <div class="step" id="step2">
+        <h1>🔒 Özel Soru</h1>
+        <p>Sana ilk kez söylediğim o özel kelime?</p>
+        <input type="text" id="passInput" placeholder="Cevabını buraya yaz..." autocomplete="off">
+        <div id="errorMsg" style="color: #ff4d6d; display: none; margin-bottom: 10px; font-weight: bold;">Hatalı cevap! ❤️</div>
+        <button class="btn-next" onclick="checkPass()">Sürprizi Aç ❤️</button>
+    </div>
+
+    <div class="step" id="step3">
+        <h2 style="color: #ff4d6d;">Önce Arkana Bak! 👀</h2>
+        <p>Sonra bu kalbi patlatana kadar tıkla...</p>
+        <div id="heartContainer" onclick="growHeart()">
+            <span id="explodingHeart">❤️</span>
+        </div>
+    </div>
+
+    <div class="step" id="step4">
+        <h1 style="color: #ff4d6d;">Seni Çok Seviyorum! ❤️</h1>
+        <div class="letter-box">
+            <p><strong>Canım Sevgilim,</strong></p>
+            <p>Fıstığım, hayatıma girdiğin günden beri her şey çok daha renkli.Eksik parçamı seninle tamamladım, şimdi o parçayı sonsuza dek koruma zamanı.Gözlerimi kapattığımda gördüğüm hayal sensin, gözlerimi açtığımda yanımda görmek istediğim tek kişi de sen.Sen benim sadece bugünüm değil, tüm yarınlarımsın. İyi ki varsın, iyi ki beraberiz." </p>
+            <p>Seni her şeyden çok seviyorum!</p>
+        </div>
+        <button class="btn-next" onclick="nextPage(5)">Son Bir Şey... 🎁</button>
+    </div>
+
+    <div class="step" id="step5">
+        <img src="{{ url_for('static', filename='gri_kedi.png') }}" class="cat-img">
+        <h1>Birlikte Nice Senelere!</h1>
+        <p>Seni her gün daha çok seveceğim. ❤️</p>
+        <button class="btn-next" onclick="location.reload()">Başa Dön 🔄</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<script>
+    let clickCount = 0;
+    let rainInterval;
+
+    function nextPage(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step' + n).classList.add('active');
+        
+        if(n === 4) {
+            startHeartRain();
+            document.getElementById('bgMusic').play();
+        }
+    }
+
+    function checkPass() {
+        const val = document.getElementById('passInput').value.trim().toLowerCase();
+        if(val === "fıstık" || val === "fistik") {
+            nextPage(3);
+        } else {
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    }
+
+    function growHeart() {
+        clickCount++;
+        const heart = document.getElementById('explodingHeart');
+        if (clickCount <= 3) {
+            heart.style.transform = `scale(${1 + clickCount * 1.5})`;
+        }
+        if (clickCount === 4) {
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+            setTimeout(() => { nextPage(4); }, 500);
+        }
+    }
+
+    function startHeartRain() {
+        rainInterval = setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('falling-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 5000);
+        }, 300);
+    }
+</script>
+
+</body>
+</html>
